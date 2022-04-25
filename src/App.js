@@ -54,10 +54,23 @@ const App = () => {
   }
 
   //Toggle Reminder
-  const toggleReminder = (id) => {
+  const toggleReminder = async (id) => {
+        const taskToToggle = await fetchTasks(id)
+        const updTask = { ...taskToToggle, reminder: !taskToToggle.reminder}
+
+        const res = await fetch(`http://localhost:5000/tasks/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify(updTask)
+        })
+
+      const data = await res.json()
+
         setTasks(tasks.map((task) =>
-            task.id == id ? { ...task, reminder: !task.reminder } : task))
-        console.log(id)
+            task.id == id ? { ...task, reminder: data.reminder } : task))
+
   }
 
   return (
